@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تطبيقات للمكفوفين</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+/* Layout: two stacked sheets, each a header band + 2-col card grid (1 col on phones), RTL throughout */
+:root{
+ --bg:#efeafd; --surface:#ffffff; --soft:#f5f2ff; --line:#e4ddfb; --ink:#1b1736; --muted:#4c4470;
+ --accent:#5b21b6; --accent-2:#7c3aed; --deep:#3b0d8c; --on-deep:#ffffff;
+ --ok-bg:#ecfdf5; --ok-fg:#047857; --ok-bd:#a7f3d0;
+ --price-bg:#fff7ed; --price-fg:#9a3412; --price-bd:#fed7aa;
+ --en-bg:#fffbeb; --en-fg:#92400e; --en-bd:#fcd34d;
+ --dev-bg:#eef2ff; --dev-fg:#3730a3; --dev-bd:#c7d2fe;
+ --note-bg:#f3edff; --note-bd:#b9a5f6;
+ --font: -apple-system, BlinkMacSystemFont, "SF Arabic", system-ui, "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+ --bg:#14111f; --surface:#1d1930; --soft:#262040; --line:#342c55; --ink:#ece8ff; --muted:#b7aedb;
+ --accent:#b79cff; --accent-2:#c4adff; --deep:#4c1d95; --on-deep:#ffffff;
+ --ok-bg:#0f2a22; --ok-fg:#6ee7b7; --ok-bd:#1f5a46;
+ --price-bg:#2d1d10; --price-fg:#fdba74; --price-bd:#5c3a1c;
+ --en-bg:#2b2410; --en-fg:#fcd34d; --en-bd:#5b4a17;
+ --dev-bg:#1c2147; --dev-fg:#a5b4fc; --dev-bd:#343d7a;
+ --note-bg:#241d40; --note-bd:#5b4a9c; color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#14111f; --surface:#1d1930; --soft:#262040; --line:#342c55; --ink:#ece8ff; --muted:#b7aedb;
+ --accent:#b79cff; --accent-2:#c4adff; --deep:#4c1d95; --on-deep:#ffffff;
+ --ok-bg:#0f2a22; --ok-fg:#6ee7b7; --ok-bd:#1f5a46;
+ --price-bg:#2d1d10; --price-fg:#fdba74; --price-bd:#5c3a1c;
+ --en-bg:#2b2410; --en-fg:#fcd34d; --en-bd:#5b4a17;
+ --dev-bg:#1c2147; --dev-fg:#a5b4fc; --dev-bd:#343d7a;
+ --note-bg:#241d40; --note-bd:#5b4a9c; color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);direction:rtl;text-align:right;
+ padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px;
+ -webkit-font-smoothing:antialiased;line-height:1.6}
+.page{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.jump{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.jump a{color:var(--accent);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:8px 18px;font-weight:700;text-decoration:none;font-size:16px}
+.jump a:focus-visible{outline:3px solid var(--accent-2);outline-offset:2px}
+.sheet{display:flex;flex-direction:column;gap:18px;scroll-margin-top:16px}
+.head{background:var(--soft);border:2px solid var(--line);border-radius:26px;padding:24px 22px 20px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.badge{align-self:flex-start;background:var(--deep);color:var(--on-deep);font-weight:700;font-size:15px;padding:6px 14px;border-radius:999px;display:inline-flex;gap:7px;align-items:center}
+.h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.3;text-wrap:balance}
+.h2{font-size:clamp(30px,5.6vw,50px);font-weight:800;color:var(--accent);line-height:1.3;text-wrap:balance}
+.sub{font-size:clamp(15px,2.2vw,19px);color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border-radius:22px;padding:18px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:12px;min-width:0}
+.top{display:flex;gap:12px;align-items:center}
+.tile{flex:none;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff}
+.tt{min-width:0;flex:1}
+.name{font-size:24px;font-weight:800;line-height:1.25}
+.tag{font-size:15px;color:var(--accent-2);font-weight:600}
+.num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--deep);color:var(--on-deep);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center}
+.desc{font-size:17px;color:var(--ink)}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--soft);border-radius:14px;padding:12px 4px}
+.feat{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;font-size:14.5px;color:var(--muted);padding:0 4px;border-left:1.5px solid var(--line);line-height:1.35}
+.feat:last-child{border-left:none}
+.feat svg{color:var(--accent)}
+.info{display:flex;gap:7px;flex-wrap:wrap}
+.pill{font-size:14px;font-weight:700;padding:4px 11px;border-radius:999px;background:var(--dev-bg);color:var(--dev-fg);border:1.5px solid var(--dev-bd)}
+.pill.ar{background:var(--ok-bg);color:var(--ok-fg);border-color:var(--ok-bd)}
+.pill.pr{background:var(--price-bg);color:var(--price-fg);border-color:var(--price-bd)}
+.pill.en{background:var(--en-bg);color:var(--en-fg);border-color:var(--en-bd)}
+.note{display:flex;gap:9px;align-items:flex-start;background:var(--note-bg);border:1.5px dashed var(--note-bd);border-radius:14px;padding:9px 12px;font-size:14.5px;color:var(--ink)}
+.note svg{flex:none;color:var(--accent-2);margin-top:3px}
+.note b{color:var(--accent-2)}
+.use{display:flex;gap:11px;align-items:center;background:var(--soft);border-radius:14px;padding:11px 13px;margin-top:auto}
+.use svg{flex:none;color:var(--accent)}
+.use b{display:block;color:var(--accent-2);font-size:15.5px}
+.use span{font-size:15px;color:var(--ink)}
+.fnote{display:flex;gap:12px;align-items:center;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px 18px;font-size:16.5px}
+.fnote svg{flex:none;color:var(--accent)}
+.fnote b{color:var(--accent-2)}
+.footer{background:var(--deep);color:var(--on-deep);border-radius:18px;padding:16px;text-align:center;font-size:clamp(18px,3vw,23px);font-weight:800;display:flex;gap:12px;justify-content:center;align-items:center}
+.src{text-align:center;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="page" dir="rtl" lang="ar">
+<nav class="jump"><a href="#daily">تطبيقات الحياة اليومية</a><a href="#study">تطبيقات أكاديمية</a></nav>
+<section class="sheet" id="daily">
+<header class="head"><span class="badge"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>الحياة اليومية</span>
+ <h2 class="h1">تطبيقات مفيدة</h2><div class="h2">للمكفوفين وضعاف البصر</div><p class="sub">٦ تطبيقات للحياة اليومية • ٥ منها تدعم العربية</p></header>
+<div class="grid"><article class="card">
+ <div class="top"><div class="num">١</div><div class="tile" style="background:#2563eb"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div>
+  <div class="tt"><h3 class="name">Be My Eyes</h3><div class="tag">مساعدة بشرية + ذكاء اصطناعي</div></div></div>
+ <p class="desc">مكالمة فيديو مع متطوع يرى من خلال كاميرتك، أو أرسل صورة إلى Be My AI ليصفها لك ويجيب عن أسئلتك.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.8.2 5 2.6 5 5.8"/></svg><span>متطوعون ٢٤/٧</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg><span>وصف الصور</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg><span>٣٦ لغة للذكاء الاصطناعي</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>سجّل كمستخدم كفيف، ثم اختر «اتصل بمتطوع» أو صوّر وأرسل إلى Be My AI.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٢</div><div class="tile" style="background:#0d9488"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></div>
+  <div class="tt"><h3 class="name">Envision AI</h3><div class="tag">قراءة النصوص بالكاميرا</div></div></div>
+ <p class="desc">يقرأ النص المطبوع وخط اليد بأكثر من ٦٠ لغة منها العربية، ويقرأ ملفات PDF والصور، ويمكنك سؤاله عن محتوى المستند.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>مطبوع وخط يد</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14M7 5v14M10 5v14M14 5v14M16 5v14M20 5v14"/></svg><span>الباركود</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>وصف المشاهد</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>افتح «قراءة النص»، وجّه الكاميرا للورقة، واستمع للنص أو اسأل عنه.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٣</div><div class="tile" style="background:#4f46e5"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+  <div class="tt"><h3 class="name">Lookout</h3><div class="tag">من Google</div></div></div>
+ <p class="desc">يستخدم الكاميرا لقراءة النصوص والمستندات، والتعرّف على العملات وملصقات الأطعمة، ووصف ما حولك.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>نصوص ومستندات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/><path d="M6 9v.01M18 15v.01"/></svg><span>العملات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7a3 3 0 006 0V3M10 3v18M17 3c-2 2-2 7 0 9v9"/></svg><span>ملصقات الأطعمة</span></div></div>
+ <div class="info"><span class="pill">أندرويد فقط</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>العملات المدعومة: الدولار واليورو والروبية الهندية فقط، ووصف الصور بـ Gemini بالإنجليزية حالياً.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>اختر الوضع المناسب من أسفل الشاشة ثم وجّه الكاميرا.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٤</div><div class="tile" style="background:#16a34a"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/><path d="M6 9v.01M18 15v.01"/></svg></div>
+  <div class="tt"><h3 class="name">Cash Reader</h3><div class="tag">التعرّف على النقود</div></div></div>
+ <p class="desc">وجّه الكاميرا للورقة النقدية فيخبرك بقيمتها صوتاً أو باهتزازات خاصة، ويدعم عملات أكثر من ١٠٠ دولة.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg><span>صوت أو اهتزاز</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 12.5a10 10 0 0114 0M12 20h.01"/></svg><span>بدون إنترنت</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg><span>+١٠٠ عملة</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني + اشتراك</span><span class="pill ar">واجهة عربية</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>النسخة المجانية تتعرّف على أصغر فئتين أو ثلاث فقط، والكاملة باشتراك بعد تجربة ١٤ يوماً.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>حمّل عملتك من الإعدادات، ثم وجّه الكاميرا للورقة.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٥</div><div class="tile" style="background:#7c3aed"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg></div>
+  <div class="tt"><h3 class="name">قارئ الشاشة المدمج</h3><div class="tag">TalkBack للأندرويد • VoiceOver للآيفون</div></div></div>
+ <p class="desc">أساس استخدام الجوال للكفيف: يقرأ كل ما على الشاشة بصوت عربي، ويدعم لوحة برايل وأسطر برايل.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg><span>صوت عربي</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="6" r="1.6"/><circle cx="16" cy="6" r="1.6"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="18" r="1.6"/><circle cx="8" cy="18" r="1.6"/></svg><span>كتابة برايل</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg><span>وصف الصور</span></div></div>
+ <div class="info"><span class="pill">مدمج في الجهاز</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>الإعدادات ← تسهيلات الاستخدام ← TalkBack (أندرويد) أو VoiceOver (آيفون).</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٦</div><div class="tile" style="background:#0369a1"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></div>
+  <div class="tt"><h3 class="name">Seeing AI</h3><div class="tag">من Microsoft • باللغة الإنجليزية</div></div></div>
+ <p class="desc">يصف المشاهد والأشخاص والألوان، ويقرأ النصوص القصيرة والمستندات وخط اليد، ويتعرّف على المنتجات بالباركود، ويمكنك محادثته عن محتوى المستند.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>نصوص ومستندات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14M7 5v14M10 5v14M14 5v14M16 5v14M20 5v14"/></svg><span>المنتجات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.8.2 5 2.6 5 5.8"/></svg><span>الأشخاص والمشاهد</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني</span><span class="pill en">بالإنجليزية</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>لا يدعم العربية حالياً حسب قائمة لغاته الرسمية، لكنه من أقوى التطبيقات إذا كانت إنجليزيتك جيدة.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>اختر القناة المناسبة (نص قصير، مستند، منتج...) من أسفل الشاشة ثم وجّه الكاميرا.</span></div></div>
+</article></div>
+<div class="fnote"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة مهمة: </b>هذه التطبيقات أدوات مساعدة ولا تغني عن العصا البيضاء أو مهارات التوجّه والتنقّل الآمن. وقد تختلف الميزات حسب الجهاز والدولة والتحديثات.</div></div>
+<div class="footer"><span>أدوات بسيطة .. لفرص أكبر للاستقلالية</span><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-8-4.7-8-10.5A4.5 4.5 0 0112 7a4.5 4.5 0 018 2.5C20 15.3 12 20 12 20z"/></svg></div>
+</section>
+<section class="sheet" id="study">
+<header class="head"><span class="badge"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></svg>الدراسة</span>
+ <h2 class="h1">تطبيقات أكاديمية</h2><div class="h2">للطلاب المكفوفين وضعاف البصر</div><p class="sub">٦ أدوات للدراسة والقراءة والكتابة • تدعم العربية</p></header>
+<div class="grid"><article class="card">
+ <div class="top"><div class="num">١</div><div class="tile" style="background:#7c3aed"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0116 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></div>
+  <div class="tt"><h3 class="name">Voice Dream Reader</h3><div class="tag">قراءة الكتب والملفات صوتياً</div></div></div>
+ <p class="desc">يقرأ PDF وWord وPowerPoint وEPUB وكتب DAISY وصفحات الويب بصوت واضح، مع حفظ مكان التوقف والإشارات.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>ملفات PDF و Word</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg><span>أصوات عربية</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 12.5a10 10 0 0114 0M12 20h.01"/></svg><span>يعمل بدون إنترنت</span></div></div>
+ <div class="info"><span class="pill">آيفون (والأفضل)</span><span class="pill pr">اشتراك</span><span class="pill ar">العربية ✓</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>الصوتان العربيان (ليلى ومهدي) يُشتريان من داخل التطبيق، ونسخة أندرويد أقل ميزات.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>استورد ملف المقرر من الملفات أو Google Drive، ثم اضغط تشغيل.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٢</div><div class="tile" style="background:#0d9488"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M5 10h14M12 3l8 5H4z"/><path d="M7 10v8M12 10v8M17 10v8"/></svg></div>
+  <div class="tt"><h3 class="name">Dolphin EasyReader</h3><div class="tag">مكتبات الكتب المتاحة</div></div></div>
+ <p class="desc">قارئ كتب صُمم لذوي الإعاقة البصرية، يفتح كتب DAISY وEPUB وWord ومعادلات MathML، ويتصل بأكثر من ٤٠ مكتبة كتب متاحة.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6a2 2 0 012 2v14a2 2 0 00-2-2H4z"/><path d="M20 4h-6a2 2 0 00-2 2v14a2 2 0 012-2h6z"/></svg><span>DAISY و EPUB</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h6M7 4v6M14 7h6M4 17h6M15 15l4 4M19 15l-4 4"/></svg><span>المعادلات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="6" r="1.6"/><circle cx="16" cy="6" r="1.6"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="18" r="1.6"/><circle cx="8" cy="18" r="1.6"/></svg><span>أسطر برايل</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني للاستخدام الشخصي</span><span class="pill ar">واجهة عربية</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>أنشئ حساب Dolphin مجاني، ثم أضف ملفك أو اختر مكتبة من القائمة.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٣</div><div class="tile" style="background:#2563eb"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+  <div class="tt"><h3 class="name">Envision AI</h3><div class="tag">تحويل الأوراق المطبوعة لنص</div></div></div>
+ <p class="desc">صوّر ورقة العمل أو الملزمة فيقرأها لك، أو استورد PDF، ثم صدّر النص أو اسأله «لخّص هذه الصفحة».</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>مسح المستندات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg><span>خط اليد</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/></svg><span>اسأل عن المستند</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>اختر «مسح مستند»، واتبع الإرشاد الصوتي لضبط الورقة في الكاميرا.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٤</div><div class="tile" style="background:#ea580c"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="6" r="1.6"/><circle cx="16" cy="6" r="1.6"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="18" r="1.6"/><circle cx="8" cy="18" r="1.6"/></svg></div>
+  <div class="tt"><h3 class="name">لوحة برايل</h3><div class="tag">في TalkBack • الكتابة بالبرايل على الشاشة</div></div></div>
+ <p class="desc">تكتب بست نقاط على شاشة الجوال مباشرة بالبرايل العربي، ويدعم TalkBack أيضاً أسطر برايل الإلكترونية.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="6" r="1.6"/><circle cx="16" cy="6" r="1.6"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="18" r="1.6"/><circle cx="8" cy="18" r="1.6"/></svg><span>برايل عربي</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg><span>٦ نقاط على الشاشة</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span>أسطر برايل</span></div></div>
+ <div class="info"><span class="pill">أندرويد</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>في الآيفون: ميزة «إدخال برايل على الشاشة» ضمن VoiceOver.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>إعدادات TalkBack ← لوحة مفاتيح برايل ← إعداد، ثم اخترها من مبدّل لوحات المفاتيح.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٥</div><div class="tile" style="background:#dc2626"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></div>
+  <div class="tt"><h3 class="name">الإملاء الصوتي</h3><div class="tag">Gboard وإملاء الآيفون</div></div></div>
+ <p class="desc">اكتب الواجبات والملاحظات والبحوث بصوتك بالعربية، ثم راجعها بقارئ الشاشة قبل التسليم.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><span>تحويل الكلام لنص</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg><span>الواجبات والملاحظات</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg><span>عربي وإنجليزي</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني</span><span class="pill ar">العربية ✓</span></div>
+ 
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>في أي حقل كتابة، اضغط زر الميكروفون في لوحة المفاتيح وابدأ الكلام.</span></div></div>
+</article><article class="card">
+ <div class="top"><div class="num">٦</div><div class="tile" style="background:#4f46e5"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></div>
+  <div class="tt"><h3 class="name">مساعد ذكي صوتي</h3><div class="tag">مثل Gemini أو ChatGPT أو Claude</div></div></div>
+ <p class="desc">حاوره بصوتك بالعربية: يشرح الدروس، ويلخّص المحاضرات، ويصف الصور والرسوم البيانية، ويختبرك قبل الامتحان.</p>
+ <div class="feats"><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14M5 10h14M5 15h9M5 20h6"/></svg><span>تلخيص وشرح</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>وصف الرسوم</span></div><div class="feat"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/></svg><span>محادثة صوتية</span></div></div>
+ <div class="info"><span class="pill">آيفون وأندرويد</span><span class="pill pr">مجاني + اشتراك</span><span class="pill ar">العربية ✓</span></div>
+ <div class="note"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة: </b>تحقّق دائماً من المعلومات المهمة مع المرجع أو المعلّم.</div></div>
+ <div class="use"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><div><b>طريقة الاستخدام:</b><span>افتح الوضع الصوتي، وارفع ملف المحاضرة أو صورتها، ثم اسأل.</span></div></div>
+</article></div>
+<div class="fnote"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><div><b>ملاحظة مهمة: </b>اطلب من مدرستك أو جامعتك نسخاً رقمية (Word أو PDF نصي) من المقررات؛ فهي تُقرأ بدقة أعلى بكثير من الصور الممسوحة.</div></div>
+<div class="footer"><span>أدوات بسيطة .. لفرص أكبر للتعلّم</span><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-8-4.7-8-10.5A4.5 4.5 0 0112 7a4.5 4.5 0 018 2.5C20 15.3 12 20 12 20z"/></svg></div>
+</section>
+<p class="src">المعلومات محدّثة حتى أكتوبر ٢٠٢٦ من صفحات التطبيقات الرسمية</p>
+</main>
+</body>
+</html>
